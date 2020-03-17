@@ -1,37 +1,53 @@
 import React from "react";
+import Header from "../components/header";
 import Categories from "../components/categories";
 import News from "../components/news";
-import Header from "../components/header";
+import getCategories from "../entities/Categories";
+import getNews from "../entities/News";
 import "../App.css";
 let state;
+const arr = [];
 
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
     if (!state) {
       this.state = {
+        categories: [],
         filteredNews: [],
-        color: ""
+        checked: []
       };
     } else {
       this.state = state;
     }
   }
 
+  componentDidMount() {
+    getCategories().then(res => {
+      this.setState({ categories: res.data });
+    });
+  }
+
   componentWillUnmount() {
     state = this.state;
   }
 
-  handleFilter = (news, isChecked, id, color) => {
-    //this.setState({ filteredNews: this.state.filteredNews.concat(news) });
+  handleFilter = (id, isChecked, color) => {
     if (isChecked) {
-      this.setState(previousState => ({
-        filteredNews: [...previousState.filteredNews, ...news],
-        color: color
-      }));
+      arr.push(id);
+      getNews(id).then(res => {
+        res.data.forEach(element => {
+          element.color = color;
+        });
+        let news = res.data;
+        this.setState(previousState => ({
+          filteredNews: [...previousState.filteredNews, ...news],
+          checked: arr
+        }));
+      });
     } else {
       var checkedNews = this.state.filteredNews.filter(val => {
-        return val.categoryId !== id;
+        return val.categoryId !== parseInt(id);
       });
       this.setState({ filteredNews: checkedNews });
     }
@@ -43,10 +59,14 @@ export default class Home extends React.Component {
         <Header />
         <section>
           <div className="regionLeft">
-            <Categories filterNews={this.handleFilter} />
+            <Categories
+              categories={this.state.categories}
+              filterNews={this.handleFilter}
+              checked={this.state.checked}
+            />
           </div>
           <div className="regionRight">
-            <News news={this.state.filteredNews} color={this.state.color} />
+            <News news={this.state.filteredNews} />
           </div>
         </section>
       </div>

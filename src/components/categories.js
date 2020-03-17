@@ -1,39 +1,30 @@
 import React from "react";
 
-import getCategories from "../entities/Categories";
-import getNews from "../entities/News";
-
 export default class Categories extends React.Component {
-  state = {
-    categories: []
+  handleClick = (id, isChecked, color) => {
+    this.props.filterNews(id, isChecked, color);
   };
 
-  componentDidMount() {
-    getCategories().then(res => {
-      this.setState({ categories: res.data });
-    });
-  }
-  handleClick = (news, isChecked, id, color) => {
-    this.props.filterNews(news, isChecked, id, color);
-  };
+  componentDidMount() {}
 
   render() {
     return (
       <div>
-        {this.state.categories.map((cat, index) => (
+        {this.props.categories.map((cat, index) => (
           <div key={index}>
             <input
               onClick={ev => {
+                let id = ev.currentTarget.getAttribute("id");
                 let isChecked = ev.currentTarget.checked;
-                getNews(cat.id).then(res => {
-                  const news = res.data;
-                  this.handleClick(news, isChecked, cat.id, cat.color);
-                });
+                let color = ev.currentTarget.getAttribute("data-color");
+                this.handleClick(id, isChecked, color);
               }}
               type="checkbox"
               id={cat.id}
               name={cat.title}
               value={cat.title}
+              data-color={cat.color}
+              defaultChecked={this.props.checked.includes(cat.id.toString())}
             />
             <label htmlFor={cat.title}> {cat.title}</label>
             <br />

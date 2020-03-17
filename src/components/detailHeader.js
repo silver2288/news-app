@@ -1,13 +1,15 @@
 import React from "react";
+import SettingsBackupRestoreIcon from "@material-ui/icons/SettingsBackupRestore";
 
 const detailHeader = props => (
-  <h2
-    onClick={() => {
-      props.goBack();
-    }}
-  >
-    Componente Detalle
-  </h2>
+  <div>
+    <h2>Componente Detalle</h2>
+    <SettingsBackupRestoreIcon
+      onClick={() => {
+        props.goBack();
+      }}
+    />
+  </div>
 );
 
 export default detailHeader;

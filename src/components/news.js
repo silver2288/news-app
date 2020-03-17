@@ -10,7 +10,7 @@ export default class News extends React.Component {
             key={index}
             newsid={el.id}
             className="post"
-            style={{ background: this.props.color }}
+            style={{ background: el.color }}
           >
             <h4>{el.title}</h4>
             <p>{el.description}</p>
